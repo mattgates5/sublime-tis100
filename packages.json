@@ -1,0 +1,19 @@
+{
+  "schema_version": "3.0.0",
+  "packages": [
+    {
+      "name": "TIS-100 Assembly Syntax",
+      "description": "Syntax highlighting for TIS-100 assembly",
+      "author": "Matt Gates",
+      "homepage": "https://github.com/mattgates5/tis100-sublime",
+      "details": "https://github.com/mattgates5/tis100-sublime",
+      "releases": [
+        {
+          "sublime_text": "*",
+          "platforms": ["windows", "osx", "linux"],
+          "version": "1.0"
+        }
+      ]
+    }
+  ]
+}

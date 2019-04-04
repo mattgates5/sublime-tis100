@@ -1,0 +1,94 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - tis
+scope: source.tis
+
+contexts:
+  # The prototype context is prepended to all contexts but those setting
+  # meta_include_prototype: false.
+  prototype:
+    - include: comments
+
+  main:
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    - include: keywords
+    - include: locations
+    - include: invalid
+    - include: numbers
+    - include: strings
+
+  keywords:
+    # Keywords are assembly instrutions
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '\b(NOP|JMP)\b'
+      scope: keyword.control.flow.tis
+    - match: '\b(JEZ|JNZ|JGZ|JLZ|JRO)\b'
+      scope: keyword.control.conditional.tis
+    - match: '\b(ADD|SUB|NEG)\b'
+      scope: keyword.operator.arithmetic.tis
+    - match: '\b(SWP|SAV)\b'
+      scope: keyword.operator.assignment.tis
+    - match: '\b(MOV)\b'
+      scope: entity.name.function.tis
+    - match: '(!)'
+      scope: storage.modifier.tis
+
+  locations:
+    # Ports are addressable memory locations
+    - match: '\b(ACC|LEFT|RIGHT|UP|DOWN)\b'
+      scope: variable.function.tis
+      #scope: entity.name.tag.tis
+    # These are special internal memory locations
+    - match: '\b(NIL|ANY|LAST)\b'
+      scope: entity.name.constant.tis
+    # Labels
+    - match: '\b(.*)\b:'
+      scope: entity.name.label.tis
+    # Processor addresses
+    - match: '^(@.*)$'
+      scope: variable.annotation.tis
+
+  invalid:
+    # Invalid or inaddressable locations
+    #- match: '\b(BAK)\b'
+    #  scope: invalid.illegal.tis
+    # Invalid syntax
+    - match: '\b(?i:BAK|NOP|SWP|SAV|NEG)\b(.*)'
+      scope: invalid.illegal.tis
+
+  numbers:
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.tis
+
+  strings:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character.
+    - match: '"'
+      scope: punctuation.definition.string.begin.tis
+      push: inside_string
+
+  inside_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.tis
+    - match: '\.'
+      scope: constant.character.escape.tis
+    - match: '"'
+      scope: punctuation.definition.string.end.tis
+      pop: true
+
+  comments:
+    # Comments begin with a '#'' and finish at the end of the line.
+    - match: '#'
+      scope: punctuation.definition.comment.tis
+      push:
+        # This is an anonymous context push for brevity.
+        #- meta_scope: comment.line.double-slash.tis
+        - meta_scope: comment.line.number-sign.tis
+        - match: $\n?
+          pop: true
